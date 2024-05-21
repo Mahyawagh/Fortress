@@ -1,0 +1,256 @@
+<!-- useremployee.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Details Framework</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<header>
+    <img class="logo" src="fortressinfracon_logo.jpg" alt="Logo">
+    <h1>Fortress Infracom Ltd</h1>
+</header>
+<body>
+    
+    <div class="button-container">
+        <button id="addUserBtn" onclick="toggleUserForm()">Add User</button>
+        <button id="deleteUserBtn" onclick="toggleDeleteForm()">Delete User</button>
+        <button id="updateUserBtn" onclick="toggleUpdateForm()">Update User</button>
+    </div>
+
+    <div id="userForm" style="display: none;">
+        <input type="text" id="nameInput" placeholder="Name">
+        <input type="email" id="emailInput" placeholder="Email">
+        <input type="password" id="passwordInput" placeholder="Password">
+        <button onclick="addUser()">Submit</button>
+        <button onclick="cancelAddUser()">Cancel</button>
+    </div>
+
+    <div id="deleteForm" style="display: none;">
+        <input type="text" id="deleteNameInput" placeholder="Name">OR
+        <input type="email" id="deleteEmailInput" placeholder="Email">
+        <button onclick="deleteUser()">Delete</button>
+        <button onclick="cancelDeleteUser()">Cancel</button>
+    </div>
+    <div id="updateForm" style="display: none;">
+        <input type="text" id="updateNameInput" placeholder="Name">
+        <input type="email" id="updateEmailInput" placeholder="Email">
+        <input type="password" id="updatePasswordInput" placeholder="New Password">
+        <button onclick="updateUser()">Update</button>
+        <button onclick="cancelUpdateUser()">Cancel</button>
+    </div>
+    <!-- Flash message container -->
+    <div id="flashMessage" style="display: none;"></div>
+
+    <h1>Employee Details</h1>
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- User details will be dynamically added here -->
+        </tbody>
+    </table>
+    <footer>
+        <div class="contact-info">
+            <p>📞+91 - 22 - 6288 7900&nbsp;&nbsp;&nbsp;&nbsp; | 📞+91 - 22 - 2200 7973&nbsp;&nbsp;&nbsp;&nbsp;
+                | ✉️fortress@fortress.co.in&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="https://fortress.co.in/wp-content/uploads/2024/01/Fortress_Profile_02-01-24.pdf" id="companyProfileLink" target="_blank">Company Profile</a>
+            </p>
+        </div>
+    </footer>
+    <script>
+        // Function to toggle user status
+        function toggleStatus(userId, currentStatus) {
+            fetch(`/user_employee/toggleStatus/${userId}/${currentStatus}`, { method: 'PUT' })
+                .then(response => response.json())
+                .then(data => {
+                    // Update status in the table
+                    const statusCell = document.getElementById(`status_${userId}`);
+                    const actionCell = document.getElementById(`action_${userId}`);
+                    statusCell.textContent = data.newStatus;
+                    actionCell.innerHTML = `<button onclick="toggleStatus(${userId}, '${data.newStatus}')">${data.newStatus === 'Active' ? 'Off' : 'On'}</button>`;
+                })
+                .catch(error => console.error('Error toggling user status:', error));
+        }
+
+        // Fetch data from server
+        fetch('/employee')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#userTable tbody');
+                data.forEach(user => {
+                    const row = `<tr>
+                                    <td>${user.name}</td>
+                                    <td>${user.email}</td>
+                                    <td>${user.password}</td>
+                                    <td id="status_${user.id}" data-status="${user.status}">${user.status}</td>
+                                    <td id="action_${user.id}"><button onclick="toggleStatus(${user.id}, '${user.status}')">${user.status === 'Active' ? 'Off' : 'On'}</button></td>
+                                </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            })
+            .catch(error => console.error('Error fetching employee data:', error));
+
+        // Function to toggle user form visibility
+    function toggleUserForm() {
+            const userForm = document.getElementById('userForm');
+            userForm.style.display = userForm.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Function to add a new user
+        function addUser() {
+            const name = document.getElementById('nameInput').value;
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+
+            fetch('/employee/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email, password })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Reset form and toggle visibility
+                    document.getElementById('nameInput').value = '';
+                    document.getElementById('emailInput').value = '';
+                    document.getElementById('passwordInput').value = '';
+                    toggleUserForm();
+                    displayFlashMessage('User added successfully');
+                    // Refresh table
+                    fetchAndPopulateTable();
+                    // Optionally, you can refresh the table or show a success message
+                })
+                .catch(error => console.error('Error adding user:', error));
+        }
+        function cancelAddUser() {
+            document.getElementById('userForm').style.display = 'none';
+        }
+        // Function to toggle delete user form visibility
+        function toggleDeleteForm() {
+            const deleteForm = document.getElementById('deleteForm');
+            deleteForm.style.display = deleteForm.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Function to delete a user
+        function deleteUser() {
+            const name = document.getElementById('deleteNameInput').value;
+            const email = document.getElementById('deleteEmailInput').value;
+
+            // Check if either name or email is provided
+            if (!name && !email) {
+                alert('Please enter either name or email to delete a user.');
+                return;
+            }
+
+            fetch('/employee/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Reset form and toggle visibility
+                    document.getElementById('deleteNameInput').value = '';
+                    document.getElementById('deleteEmailInput').value = '';
+                    toggleDeleteForm();
+                    displayFlashMessage('User deleted successfully');
+                    // Refresh table
+                    fetchAndPopulateTable();
+                    // Optionally, you can refresh the table or show a success message
+                })
+                .catch(error => console.error('Error deleting user:', error));
+        }
+        function cancelDeleteUser() {
+            document.getElementById('deleteForm').style.display = 'none';
+        }
+        function displayFlashMessage(message) {
+            const flashMessage = document.getElementById('flashMessage');
+            flashMessage.textContent = message;
+            flashMessage.style.display = 'block';
+            // Hide the flash message after 3 seconds
+            setTimeout(() => {
+                flashMessage.textContent = '';
+                flashMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        function fetchAndPopulateTable() {
+    fetch('/employee')
+    .then(response => response.json())
+    .then(data => {
+        const tableBody = document.querySelector('#userTable tbody');
+        // Clear existing table rows
+        tableBody.innerHTML = '';
+        data.forEach(user => {
+            const row = `<tr>
+                            <td>${user.name}</td>
+                            <td>${user.email}</td>
+                            <td>${user.password}</td>
+                            <td id="status_${user.id}" data-status="${user.status}">${user.status}</td>
+                            <td id="action_${user.id}"><button onclick="toggleStatus(${user.id}, '${user.status}')">${user.status === 'Active' ? 'Off' : 'On'}</button></td>
+                        </tr>`;
+            tableBody.insertAdjacentHTML('beforeend', row);
+        });
+    })
+    .catch(error => console.error('Error fetching employee data:', error));
+}
+
+ // Function to toggle update user form visibility
+ function toggleUpdateForm() {
+    const updateForm = document.getElementById('updateForm');
+    updateForm.style.display = updateForm.style.display === 'none' ? 'block' : 'none';
+}
+
+// Function to update a user
+function updateUser() {
+    const name = document.getElementById('updateNameInput').value;
+    const email = document.getElementById('updateEmailInput').value;
+    const newPassword = document.getElementById('updatePasswordInput').value;
+
+    // Check if either name or email is provided
+    if (!name && !email) {
+        alert('Please enter either name or email to update a user.');
+        return;
+    }
+
+    fetch('/employee/update', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, email, newPassword })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Reset form and toggle visibility
+        document.getElementById('updateNameInput').value = '';
+        document.getElementById('updateEmailInput').value = '';
+        document.getElementById('updatePasswordInput').value = '';
+        toggleUpdateForm();
+        // Display flash message
+        displayFlashMessage('User updated successfully');
+        // Refresh table
+        fetchAndPopulateTable();
+    })
+    .catch(error => console.error('Error updating user:', error));
+}
+
+// Function to cancel updating a user
+function cancelUpdateUser() {
+    document.getElementById('updateForm').style.display = 'none';
+}
+    </script>
+</body>
+</html>

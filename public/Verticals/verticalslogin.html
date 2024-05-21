@@ -1,0 +1,198 @@
+<!-- verticalslogin -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 350px;
+      height: 460px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      /* Display form items in a column */
+      align-items: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+
+    #otpInput,
+    #passwordInput {
+      display: none;
+      /* Initially hide OTP and Password inputs */
+    }
+
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 8px 12px;
+      /* Adjust the padding to make the button look more normal */
+      border: none;
+      border-radius: 4px;
+      /* Adjust the border-radius to make the button look more normal */
+      cursor: pointer;
+      margin-bottom: 10px;
+      width: 42.4%;
+      /* Make the button take up the full width of the form */
+      height: 29px;
+    }
+
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+  <form id="VerticalsLoginForm">
+    <h2>Login as Verticals Heads</h2>
+
+    <label for="verticalsEmail">Email:</label>
+    <input type="email" id="verticalsEmail" name="verticalsEmail" required placeholder="Enter Register Email">
+
+    <div id="otpInput">
+      <label for="otp">Enter OTP:</label>
+      <input type="text" id="otp" name="otp" required placeholder="Enter Valid OTP">
+    </div>
+
+    <div id="passwordInput">
+      <label for="password">Enter Password:</label>
+      <input type="password" id="password" name="password" required placeholder="Enter Valid Password">
+    </div>
+
+    <button type="button" onclick="sendOTP()">Login with OTP</button>
+    <button type="button" onclick="showPasswordInput()">Login with Password</button>
+    <button type="button" id="loginButton" style="display: none;" onclick="login()">Login</button>
+
+    <p>Don't have an account? <a href="verticalscreate.html">Create an account</a></p>
+
+    <button type="button" onclick="goBack()">Back</button>
+
+  </form>
+
+  <script>
+    async function sendOTP() {
+      const email = document.getElementById('verticalsEmail').value;
+
+      try {
+        const response = await fetch(`/generateVerificationCode`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        if (response.ok) {
+          alert('OTP sent to your email. Please check and enter.');
+          document.getElementById('otpInput').style.display = 'block'; // Show OTP input field
+          document.getElementById('loginButton').style.display = 'block'; // Show Login button
+        } else {
+          alert('Failed to send OTP. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error sending OTP:', error);
+        alert('An error occurred while sending OTP. Please try again later.');
+      }
+    }
+
+    function showPasswordInput() {
+      document.getElementById('passwordInput').style.display = 'block'; // Show Password input field
+      document.getElementById('loginButton').style.display = 'block'; // Show Login button
+    }
+
+    async function login() {
+      const email = document.getElementById('verticalsEmail').value;
+      const password = document.getElementById('password').value;
+      const otp = document.getElementById('otp').value;
+
+      try {
+        let response;
+        if (otp) {
+          // Verify the entered OTP
+          response = await fetch(`/verifyVerificationCode`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ verificationCode: otp }),
+          });
+        } else {
+          // Login with Password
+          response = await fetch(`/loginVerticals`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+          });
+        }
+
+        if (response.ok) {
+          alert('Login successful!');
+          // Redirect to corresponding page after successful login
+          window.location.href = 'verticals.html'; // Change to your desired redirect URL
+        } else {
+          const data = await response.json();
+          if (otp && response.status === 401) {
+            // Invalid OTP, don't generate a new one
+            alert(data.error || 'Invalid OTP. Please try again.');
+          } else {
+            // Other login errors or invalid password
+            alert(data.error || 'Login failed. Please check your credentials and try again.');
+          }
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
+        alert('An error occurred during login. Please try again later.');
+      }
+    }
+
+    window.addEventListener('popstate', function (event) {
+      // Clear session data
+      document.getElementById('otpInput').style.display = 'none';
+      document.getElementById('passwordInput').style.display = 'none';
+      document.getElementById('loginButton').style.display = 'none';
+    });
+
+    
+    function goBack() {
+      // Clear session data
+      document.getElementById('otpInput').style.display = 'none';
+      document.getElementById('passwordInput').style.display = 'none';
+      document.getElementById('loginButton').style.display = 'none';
+      window.location.href = '/main.html';
+    }
+  </script>
+</body>
+
+</html>

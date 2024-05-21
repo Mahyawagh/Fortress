@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Page</title>
+    <style>
+        /* Your styles go here */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background-color: white;
+            color: #066aab;
+            padding: 15px;
+            text-align: center;
+            width: 110%;
+        }
+
+        .logo {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 100.5px;
+            height: auto;
+        }
+
+        footer {
+            background-color: #3f6a70;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .contact-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .contact-info p {
+            margin: 0;
+        }
+
+        #companyProfileLink {
+            color: white;
+            text-decoration: none;
+        }
+
+        #companyProfileLink:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            margin-top: 20px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+        }
+
+        .content ul {
+            list-style-type: none;
+            padding: 0;
+            width: 300%;
+        }
+
+        .content li {
+            margin-top: 10px;
+            transition: transform 0.3s ease-in-out;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .content li h2 {
+            display: inline-block;
+        }
+
+        .content li h2 span {
+            display: inline-block;
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .content li h2 {
+            
+            margin-right: 10px;
+        }
+
+        .content li h2 span:hover {
+            background-color: #d3d3d3;
+        }
+
+        .content li:hover {
+            transform: scale(1.08);
+        }
+
+        .back-button {
+            display: block;
+            margin-top: 10px;
+            color: #066aab;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img class="logo" src="fortressinfracon_logo.jpg" alt="Logo">
+    <h1>Fortress Infracom Ltd</h1>
+</header>
+
+<div class="content">
+    <ul>
+        <li><h2><span onclick="openTransportationPage()">🛣️Transportation🚌</span></h2></li>
+        <li><h2><span onclick="openEnvironmentalPage()">🌎Environmental🌲</span></h2></li>
+        <li><h2><span onclick="openTourismPage()">🛕Tourism</span></h2></li>
+    </ul>
+
+    <ul>
+        
+        <li><h2><span onclick="openIndustrialPage()">🏭Industrial</span></h2></li>
+        <li><h2><span onclick="openUrbaninfraPage()">🏗️Urban Infra</span></h2></li>
+</div>
+</div>
+
+<footer>
+    <div class="contact-info">
+        <p>📞+91 - 22 - 6288 7900&nbsp;&nbsp;&nbsp;&nbsp; | 📞+91 - 22 - 2200 7973&nbsp;&nbsp;&nbsp;&nbsp;
+            | 📧fortress@fortress.co.in&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://fortress.co.in/wp-content/uploads/2024/01/Fortress_Profile_02-01-24.pdf" id="companyProfileLink" target="_blank">Company Profile</a>
+        </p>
+    </div>
+</footer>
+
+<a href="/main.html" class="back-button">Back to Main Page</a>
+
+<script>
+    function openTransportationPage() {
+       window.open('Emptrans_search.html', '_blank');
+   }
+   
+   function openEnvironmentalPage() {
+       window.open('Empenv_search.html', '_blank');
+   }
+   
+   function openTourismPage(){
+       window.open('Emptour_search.html', '_blank');
+   }
+   
+   function openIndustrialPage(){
+       window.open('Empind_search.html', '_blank');
+   }
+   
+   function openUrbaninfraPage(){
+       window.open('Empurban_search.html', '_blank');
+   }
+
+
+</script>
+
+</body>
+</html>

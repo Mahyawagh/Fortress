@@ -1,0 +1,104 @@
+<!-- transportation.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transportation Framework</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Transportation Project Details</h1>
+    </header>
+    <a href="../Admin/admin.html" class="back-button"><b>Back to Main Page</b></a>
+
+    <div class="main-content">
+        <div class="button-container">
+            <button type="button" class="submit-button" onclick="openInsertForm()">Insert</button>
+            <button type="button" class="submit-button" onclick="openDisplayForm()">Display Project</button>
+            <button type="button" class="submit-button" onclick="openDeleteForm()">Delete</button>
+            <button type="button" class="submit-button" onclick="openUpdateForm()">Update</button>
+
+        </div>
+        
+        <form id="projectForm" enctype="multipart/form-data" style="display: none;">
+            <label for="project_name">Project Name<span class="mandatory">*</span>:</label>
+            <input type="text" id="project_name" name="project_name" placeholder="Enter project name">
+            <label for="year">Select Year<span class="mandatory">*</span>:</label>
+            <select id="year" name="year">
+                <option value="">Select Year</option>
+                <script>
+                    const startYear = 2000;
+                    const endYear = new Date().getFullYear();
+                    for (let year = startYear; year <= endYear; year++) {
+                        document.write(`<option value="${year}">${year}</option>`);
+                    }
+                </script>
+            </select><br>
+            <label for="photographs">Photographs (PNG, JPG,):</label>
+            <input type="file" name="photographs" accept="image/png, image/jpg " multiple><br>
+            <label for="documentation">Documentation (PDF):</label>
+            <input type="file" name="documentation" accept=".pdf" multiple><br>
+            <label for="report">Report (PDF, DOC):</label>
+            <input type="file" name="report" accept=".pdf, .docx" multiple><br>
+            <label for="presentation">Presentation (PPT, PPTX, PDF):</label>
+            <input type="file" name="presentation" accept=".ppt, .pptx, .pdf" multiple><br>
+            <label for="other">Other(PDF, DOC):</label>
+            <input type="file" name="other" accept=".pdf, .docx" multiple><br>
+
+            <button type="button" class="submit-button" onclick="submitProject()">Submit</button>
+            <button type="button" class="submit-button" onclick="closeInsertForm()">Cancel</button>
+        </form>
+        
+        <form id="searchForm" style="display: none;">
+            <label for="searchInput">Search by Project ID or Name:</label>
+            <input type="text" id="searchInput" name="searchInput" placeholder="Enter Project ID or Name">
+            <button type="button" class="submit-button" onclick="searchProject()">Search</button>
+            <button type="button" class="submit-button" onclick="closeDisplayForm()">Cancel</button>
+        </form>
+        <form id="deleteForm" style="display: none;">
+            <label for="deleteInput">Enter Project ID or Name to Delete:</label>
+            <input type="text" id="deleteInput" name="deleteInput" placeholder="Enter Project ID or Name">
+            <button type="button" class="submit-button" onclick="deleteProject()">Delete</button>
+            <button type="button" class="submit-button" onclick="closeDeleteForm()">Cancel</button>
+        </form>
+        
+      
+        <form id="updateForm" enctype="multipart/form-data" style="display: none;">
+            <label for="projectId">Project ID:</label>
+            <input type="text" id="projectId" name="project_id" required><br><br>
+            <label for="photographs">Select Photographs:</label>
+            <input type="file" id="photographs" name="photographs" multiple accept="image/*"><br><br>
+            <label for="documentation">Select Documentation:</label>
+            <input type="file" id="documentation" name="documentation" multiple accept=".pdf, .docx"><br><br>
+            <lable for="report">Select Report:</lable>
+            <input type="file" id="report" name="report" multiple accept=".pdf, .docx"><br><br>
+            <label for="presentation">Select Presentation:</label>
+            <input type="file" id="presentation" name="presentation" multiple accept=".ppt, .pptx, .pdf"><br><br>
+            <label for="other">Select Other:</label>
+            <input type="file" id="other" name="other" multiple accept=".pdf, .docx"><br><br>
+            
+            <button type="submit">Update</button>
+            <button type="button" class="submit-button" onclick="closeUpdateForm()">Cancel</button>
+        </form>
+        
+        
+        <div id="photographsContainer" class="photographs-container" style="display: none;">
+        </div>
+    </div>
+    
+    <footer>
+        <div class="contact-info">
+            <p>📞+91 - 22 - 6288 7900&nbsp;&nbsp;&nbsp;&nbsp; | 📞+91 - 22 - 2200 7973&nbsp;&nbsp;&nbsp;&nbsp;
+                | ✉️fortress@fortress.co.in&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="https://fortress.co.in/wp-content/uploads/2024/01/Fortress_Profile_02-01-24.pdf"
+                    id="companyProfileLink" target="_blank">Company Profile</a>
+            </p>
+        </div>
+    </footer>
+    <div id="projectsGrid" class="projects-grid"></div>
+    <script src="scripts.js"></script>
+</body>
+</html>
+
